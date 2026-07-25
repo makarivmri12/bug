@@ -1,0 +1,66 @@
+# Default values for hlfa helm chart
+
+replicaCount:
+  backend: 3
+  python: 2
+  frontend: 2
+
+image:
+  registry: ghcr.io
+  backend:
+    repository: makarivmri12/hlfa-backend
+    tag: latest
+  python:
+    repository: makarivmri12/hlfa-python
+    tag: latest
+  frontend:
+    repository: makarivmri12/hlfa-frontend
+    tag: latest
+
+resources:
+  backend:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  python:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  frontend:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+postgres:
+  enabled: true
+  storage: 20Gi
+
+redis:
+  enabled: true
+  storage: 10Gi
+
+neo4j:
+  enabled: true
+  storage: 30Gi
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: hlfa.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: api.hlfa.example.com
+      paths:
+        - path: /
+          pathType: Prefix

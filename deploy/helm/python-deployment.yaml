@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hlfa-python-engine
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hlfa-python-engine
+  template:
+    metadata:
+      labels:
+        app: hlfa-python-engine
+    spec:
+      containers:
+      - name: hlfa-python-engine
+        image: ghcr.io/makarivmri12/hlfa-python:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: REDIS_URL
+          value: "redis://redis:6379"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hlfa-python-engine
+spec:
+  selector:
+    app: hlfa-python-engine
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+  type: ClusterIP

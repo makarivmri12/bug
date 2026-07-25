@@ -1,0 +1,9 @@
+name: hlfa
+appVersion: "1.0.0"
+apiVersion: v2
+kind: Chart
+description: HLFA - Heuristic Logic & Flow Analyzer
+home: https://github.com/makarivmri12/bug
+maintainers:
+  - name: HLFA Team
+    email: team@hlfa.dev

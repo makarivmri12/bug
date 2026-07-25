@@ -1,0 +1,29 @@
+# Frontend Dockerfile
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY frontend/package*.json ./
+RUN npm ci
+
+COPY frontend/src ./src
+COPY frontend/index.html ./
+COPY frontend/vite.config.ts ./
+COPY frontend/tsconfig*.json ./
+COPY frontend/tailwind.config.cjs ./
+COPY frontend/postcss.config.cjs ./
+
+RUN npm run build
+
+# Runtime
+FROM node:20-alpine
+
+RUN npm install -g serve
+
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 3000
+
+CMD ["serve", "-s", "dist", "-l", "3000"]

@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hlfa-config
+data:
+  LOG_LEVEL: "info"
+  DATABASE_MAX_CONNECTIONS: "25"
+  PYTHON_ENGINE_HOST: "python-engine"
+  PYTHON_ENGINE_PORT: "5000"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hlfa-secrets
+type: Opaque
+stringData:
+  database-dsn: "postgres://hlfa:changeme@postgres:5432/hlfa"
+  redis-password: "changeme"
+  neo4j-password: "changeme"
+  jwt-secret: "your-super-secret-jwt-key-here"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/postgres"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/redis"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: neo4j-pv
+spec:
+  capacity:
+    storage: 30Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/neo4j"

@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hlfa-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hlfa-backend
+  template:
+    metadata:
+      labels:
+        app: hlfa-backend
+    spec:
+      containers:
+      - name: hlfa-backend
+        image: ghcr.io/makarivmri12/hlfa-backend:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_DSN
+          valueFrom:
+            secretKeyRef:
+              name: hlfa-secrets
+              key: database-dsn
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: hlfa-config
+              key: LOG_LEVEL
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hlfa-backend
+spec:
+  selector:
+    app: hlfa-backend
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hlfa-backend-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hlfa-backend
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
