@@ -1,0 +1,44 @@
+server:
+  port: 8080
+  host: "0.0.0.0"
+  env: "development"
+  debug: true
+
+database:
+  dsn: "postgres://hlfa:hlfa@postgres:5432/hlfa"
+  max_connections: 25
+  max_idle_conns: 5
+  conn_max_lifetime: 300
+
+redis:
+  addr: "redis:6379"
+  password: ""
+  db: 0
+
+neo4j:
+  uri: "bolt://neo4j:7687"
+  username: "neo4j"
+  password: "neo4j"
+
+python:
+  host: "python-engine"
+  port: 5000
+
+security:
+  jwt_secret: "your-super-secret-key-here"
+  api_key_required: true
+
+# Scanner settings
+scanners:
+  web:
+    enabled: true
+    concurrency: 50
+    timeout: 30
+  network:
+    enabled: true
+    concurrency: 10
+    timeout: 60
+  logic:
+    enabled: true
+    concurrency: 5
+    timeout: 120

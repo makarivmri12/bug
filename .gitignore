@@ -1,0 +1,46 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+bin/
+
+# Test binary
+*.test
+
+# Output files
+*.out
+
+# Dependency folders
+vendor/
+node_modules/
+__pycache__/
+*.egg-info/
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
+.next/
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+.pytest_cache/
